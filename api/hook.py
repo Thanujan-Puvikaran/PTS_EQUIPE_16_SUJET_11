@@ -1,9 +1,6 @@
 import os
-
-from sympy import EX
 from config import credentials
 import requests
-import re
 
 
 def find_file(fullname, extension, path=""):
