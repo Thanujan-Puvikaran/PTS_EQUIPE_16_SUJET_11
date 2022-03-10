@@ -1,10 +1,8 @@
 from flask_restplus import Namespace, Resource, fields
-from numpy.core.fromnumeric import ndim
 from config import raiseError
-from mapping import defaultValue
 import pickle
 from flask import send_file
-from hook import find_file
+from hook import find_file, requests_search
 import pandas as pd
 
 namespace = Namespace("model", "Model related endpoints")
@@ -12,8 +10,8 @@ namespace = Namespace("model", "Model related endpoints")
 payload = namespace.model(
     "model",
     {
-        "Age": fields.Integer(
-            description="Age: the value must be above 18, else there will be an error",
+        "movie_name": fields.String(
+            description="The movie that you want to predict the success of",
             required=False,
         ),
     },
@@ -27,15 +25,18 @@ class Model(Resource):
     def post(self):
         """Predict the class of the movie with NAME"""  # REPALCE NAME WITH THE CORRECT NAME OF MODEL
         try:
-            # payload = defaultValue(payload=namespace.payload, flag=False)
-            # knn_filename = "../model/knn.pkl"
-            # with open(knn_filename, "rb") as file:
-            #     knn_model = pickle.load(file)
-            # payload = pd.DataFrame(payload.value, index=["0"])
-            # pred = knn_model.predict(payload)
-            output = {"response": "success"}
-            # output = {"response": pred[0]}
+
+            payload = namespace.payload
+            # filename = "../../../models/model.pkl"
+            # with open(filename, "rb") as file:
+            #     model = pickle.load(file)
+            output = requests_search(payload["movie_name"])
             return output
+            # payload = pd.DataFrame(payload.value, index=["0"])
+            # pred = model.predict(payload)
+            # output = {"response": "success"}
+            # output = {"response": pred[0]}
+            # return output
         except Exception as e:
             if raiseError.JSONERROR in e.__str__():
                 return {"response": {"error": raiseError.JSONMESSAGE}}

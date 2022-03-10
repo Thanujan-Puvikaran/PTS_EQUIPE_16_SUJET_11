@@ -8,3 +8,8 @@ class raiseError:
     )
     TYPEERROR = "TypeError"
     TYPEMESSAGE = "Wrong variable type, check it carefully"
+
+
+class credentials:
+    API_KEY = "a7a0813f3d0ae3a4c26bf99545474eae"
+    API_BASE_URL = "https://api.themoviedb.org/3"
