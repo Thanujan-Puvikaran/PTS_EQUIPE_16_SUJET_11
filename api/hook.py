@@ -1,4 +1,6 @@
 import os
+from config import credentials
+import requests
 
 
 def find_file(fullname, extension, path=""):
@@ -26,3 +28,13 @@ def file_path(name, extension=".ipynb", path=""):
     fullpath = path + "%s" % (name + extension)
     ROOT_PATH = os.path.dirname(os.path.abspath(fullpath))
     return os.path.join(ROOT_PATH, name + extension)
+
+
+def requests_search(name: str) -> list:
+    url = f"https://api.themoviedb.org/3/search/movie?api_key={credentials.API_KEY}&query={name}&language=en-US"
+    res = requests.get(url).json()
+    movies = dict()
+    movies["response"]=dict()
+    for el in res["results"]:
+        movies["response"][el["id"]]= el["original_title"]
+    return movies
