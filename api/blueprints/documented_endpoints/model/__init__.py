@@ -1,4 +1,3 @@
-from unicodedata import name
 from flask_restplus import Namespace, Resource, fields
 from sqlalchemy import true
 from config import raiseError
