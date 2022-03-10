@@ -36,14 +36,15 @@ class Model(Resource):
     def post(self):
         """Predict the class of the movie with NAME"""  # REPALCE NAME WITH THE CORRECT NAME OF MODEL
         try:
-            payload=namespace.payload
-            input = requests_movie(payload["movie_id"])
+            payload = namespace.payload
+            inputs = requests_movie(int(payload["movie_id"]))
             # filename = "../../../models/model.pkl"
             # with open(filename, "rb") as file:
             #     model = pickle.load(file)
             # payload = pd.DataFrame(payload.value, index=["0"])
             # pred = model.predict(input)
-            output = {"response": "success"}
+            
+            output = inputs
             # output = {"response": pred[0]}
             return output
         except Exception as e:
