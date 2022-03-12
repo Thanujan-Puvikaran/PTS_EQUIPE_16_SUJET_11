@@ -1,8 +1,8 @@
 from flask_restplus import Namespace, Resource, fields
 from sqlalchemy import true
-from config import raiseError
-
-# import pickle
+from config import mapping
+import pandas as pd
+import pickle
 from hook import requests_search, requests_movie
 
 namespace = Namespace("model", "Model related endpoint")
@@ -28,26 +28,38 @@ class getmovie(Resource):
         return output
 
 
-@namespace.route("/NAME")  # REPLACE NAME WITH THE CORRECT NAME OF MODEL
-class Model(Resource):
+@namespace.route("/SVC")
+class Model_SVC(Resource):
     @namespace.doc(body=payload)
     @namespace.response(200, "Success")
     def post(self):
-        """Predict the class of the movie with NAME"""  # REPALCE NAME WITH THE CORRECT NAME OF MODEL
-        try:
-            payload = namespace.payload
-            inputs = requests_movie(int(payload["movie_id"]))
-            # filename = "../../../models/model.pkl"
-            # with open(filename, "rb") as file:
-            #     model = pickle.load(file)
-            # payload = pd.DataFrame(payload.value, index=["0"])
-            # pred = model.predict(input)
-            
-            output = inputs
-            # output = {"response": pred[0]}
-            return output
-        except Exception as e:
-            if raiseError.JSONERROR in e.__str__():
-                return {"response": {"error": raiseError.JSONMESSAGE}}
-            elif raiseError.TYPEERROR in e.__str__():
-                return {"response": {"error": raiseError.TYPEMESSAGE}}
+        """Predict the class of the movie with SVC"""
+        payload = namespace.payload
+        inputs = requests_movie(int(payload["movie_id"]))
+        filename = "../models/model_svc.pkl"
+        with open(filename, "rb") as file:
+            model = pickle.load(file)
+        x = pd.DataFrame(inputs["response"], index=["0"])
+        x = pd.DataFrame(inputs["response"], index=["0"])
+        x.drop(columns=["movie_id", "title"], inplace=True)
+        pred = model.predict(x)
+        output = {"response": {inputs["response"]["title"]: mapping.PREDICTION_MAP[str(pred[0])]}}
+        return output
+
+@namespace.route("/XGBOOST")
+class Model_SVC(Resource):
+    @namespace.doc(body=payload)
+    @namespace.response(200, "Success")
+    def post(self):
+        """Predict the class of the movie with XGBOOST"""
+        payload = namespace.payload
+        inputs = requests_movie(int(payload["movie_id"]))
+        filename = "../models/model_xg_grid.pkl"
+        with open(filename, "rb") as file:
+            model = pickle.load(file)
+        x = pd.DataFrame(inputs["response"], index=["0"])
+        x = pd.DataFrame(inputs["response"], index=["0"])
+        x.drop(columns=["movie_id", "title"], inplace=True)
+        pred = model.predict(x)
+        output = {"response": {inputs["response"]["title"]: mapping.PREDICTION_MAP[str(pred[0])]}}
+        return output
