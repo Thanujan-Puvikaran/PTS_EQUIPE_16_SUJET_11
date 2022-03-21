@@ -47,7 +47,7 @@ class Model_SVC(Resource):
         return output
 
 @namespace.route("/XGBOOST")
-class Model_SVC(Resource):
+class Model_XGBOOST(Resource):
     @namespace.doc(body=payload)
     @namespace.response(200, "Success")
     def post(self):
